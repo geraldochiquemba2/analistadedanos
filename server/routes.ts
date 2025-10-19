@@ -103,7 +103,7 @@ Retorne APENAS o objeto JSON válido, sem markdown ou texto adicional.`,
         },
       ],
       temperature: 0.3,
-      max_tokens: 32000,
+      max_tokens: 8192,
       response_format: { type: "json_object" },
     });
 
