@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { UploadZone } from "@/components/UploadZone";
 import { AnalysisResult, type AnalysisResultData } from "@/components/AnalysisResult";
@@ -6,75 +6,7 @@ import { HistoryPanel } from "@/components/HistoryPanel";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ScanSearch, History, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-
-//todo: remove mock functionality
-const mockAnalyzeImages = async (
-  files: File[],
-  description: string
-): Promise<AnalysisResultData> => {
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-
-  return {
-    id: `analysis-${Date.now()}`,
-    timestamp: new Date(),
-    summary:
-      "Análise completa realizada com sucesso. Identificados diversos danos em diferentes níveis de severidade. Recomenda-se avaliação profissional para orçamento detalhado de reparos.",
-    totalItems: 6,
-    severityCounts: {
-      low: 2,
-      moderate: 2,
-      high: 2,
-    },
-    overallSeverity: "moderate",
-    damageItems: [
-      {
-        itemName: "Componente Principal",
-        itemType: "Estrutura",
-        severity: "high",
-        description:
-          "Dano severo identificado com rachadura profunda e deformação estrutural. Comprometimento da integridade detectado.",
-        estimatedImpact: "Substituição ou reparo estrutural necessário.",
-      },
-      {
-        itemName: "Acabamento Superficial",
-        itemType: "Acabamento",
-        severity: "moderate",
-        description:
-          "Arranhões profundos e descascamento de pintura em área visível.",
-        estimatedImpact: "Reparo estético recomendado.",
-      },
-      {
-        itemName: "Sistema de Fixação",
-        itemType: "Componente Mecânico",
-        severity: "high",
-        description:
-          "Componente de fixação danificado com perda de funcionalidade.",
-        estimatedImpact: "Substituição imediata necessária para segurança.",
-      },
-      {
-        itemName: "Revestimento Protetor",
-        itemType: "Proteção",
-        severity: "moderate",
-        description: "Desgaste acentuado com exposição do material base.",
-        estimatedImpact: "Reparo preventivo recomendado.",
-      },
-      {
-        itemName: "Elemento Decorativo",
-        itemType: "Estético",
-        severity: "low",
-        description: "Pequenos riscos superficiais sem comprometimento funcional.",
-        estimatedImpact: "Reparo opcional, apenas estético.",
-      },
-      {
-        itemName: "Superfície de Contato",
-        itemType: "Interface",
-        severity: "low",
-        description: "Marcas de uso normal e desgaste superficial.",
-        estimatedImpact: "Manutenção preventiva sugerida.",
-      },
-    ],
-  };
-};
+import { useToast } from "@/hooks/use-toast";
 
 export default function HomePage() {
   const [view, setView] = useState<"upload" | "result" | "history">("upload");
@@ -82,17 +14,67 @@ export default function HomePage() {
   const [currentResult, setCurrentResult] = useState<AnalysisResultData | null>(null);
   const [history, setHistory] = useState<AnalysisResultData[]>([]);
   const [showHistory, setShowHistory] = useState(false);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    loadHistory();
+  }, []);
+
+  const loadHistory = async () => {
+    try {
+      const response = await fetch("/api/analyses");
+      if (!response.ok) throw new Error("Falha ao carregar histórico");
+      const data = await response.json();
+      const analyses = data.map((item: any) => ({
+        ...item,
+        timestamp: new Date(item.timestamp),
+      }));
+      setHistory(analyses);
+    } catch (error) {
+      console.error("Erro ao carregar histórico:", error);
+    }
+  };
 
   const handleAnalyze = async (files: File[], description: string) => {
     setIsAnalyzing(true);
     try {
-      //todo: remove mock functionality - replace with actual API call
-      const result = await mockAnalyzeImages(files, description);
-      setCurrentResult(result);
-      setHistory((prev) => [result, ...prev]);
+      const formData = new FormData();
+      files.forEach((file) => {
+        formData.append("images", file);
+      });
+      formData.append("description", description);
+
+      const response = await fetch("/api/analyze", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.details || error.error || "Erro na análise");
+      }
+
+      const result = await response.json();
+      const analysis: AnalysisResultData = {
+        ...result,
+        timestamp: new Date(result.timestamp),
+      };
+
+      setCurrentResult(analysis);
+      setHistory((prev) => [analysis, ...prev]);
       setView("result");
+
+      toast({
+        title: "Análise concluída",
+        description: `${analysis.totalItems} ${analysis.totalItems === 1 ? "item danificado foi identificado" : "itens danificados foram identificados"}.`,
+      });
     } catch (error) {
       console.error("Erro na análise:", error);
+      toast({
+        variant: "destructive",
+        title: "Erro na análise",
+        description: error instanceof Error ? error.message : "Não foi possível completar a análise. Tente novamente.",
+      });
     } finally {
       setIsAnalyzing(false);
     }
@@ -107,11 +89,31 @@ export default function HomePage() {
     }
   };
 
-  const handleDeleteAnalysis = (id: string) => {
-    setHistory((prev) => prev.filter((a) => a.id !== id));
-    if (currentResult?.id === id) {
-      setCurrentResult(null);
-      setView("upload");
+  const handleDeleteAnalysis = async (id: string) => {
+    try {
+      const response = await fetch(`/api/analyses/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) throw new Error("Falha ao deletar análise");
+
+      setHistory((prev) => prev.filter((a) => a.id !== id));
+      if (currentResult?.id === id) {
+        setCurrentResult(null);
+        setView("upload");
+      }
+
+      toast({
+        title: "Análise removida",
+        description: "A análise foi removida do histórico.",
+      });
+    } catch (error) {
+      console.error("Erro ao deletar análise:", error);
+      toast({
+        variant: "destructive",
+        title: "Erro ao remover",
+        description: "Não foi possível remover a análise. Tente novamente.",
+      });
     }
   };
 
