@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { UploadZone } from "@/components/UploadZone";
 import { AnalysisResult, type AnalysisResultData } from "@/components/AnalysisResult";
+import { AnalysisProgress } from "@/components/AnalysisProgress";
 import { HistoryPanel } from "@/components/HistoryPanel";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ScanSearch, History, Plus } from "lucide-react";
@@ -11,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 export default function HomePage() {
   const [view, setView] = useState<"upload" | "result" | "history">("upload");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisStage, setAnalysisStage] = useState<"vision" | "reasoning" | "complete">("vision");
   const [currentResult, setCurrentResult] = useState<AnalysisResultData | null>(null);
   const [history, setHistory] = useState<AnalysisResultData[]>([]);
   const [showHistory, setShowHistory] = useState(false);
@@ -37,12 +39,21 @@ export default function HomePage() {
 
   const handleAnalyze = async (files: File[], description: string) => {
     setIsAnalyzing(true);
+    setAnalysisStage("vision");
+    
+    let stageTimer: NodeJS.Timeout | null = null;
+    
     try {
       const formData = new FormData();
       files.forEach((file) => {
         formData.append("images", file);
       });
       formData.append("description", description);
+
+      // Transição para etapa de raciocínio após 3 segundos
+      stageTimer = setTimeout(() => {
+        setAnalysisStage("reasoning");
+      }, 3000);
 
       const response = await fetch("/api/analyze", {
         method: "POST",
@@ -60,13 +71,17 @@ export default function HomePage() {
         timestamp: new Date(result.timestamp),
       };
 
+      setAnalysisStage("complete");
       setCurrentResult(analysis);
       setHistory((prev) => [analysis, ...prev]);
-      setView("result");
+      
+      setTimeout(() => {
+        setView("result");
+      }, 1000);
 
       toast({
-        title: "Análise concluída",
-        description: `${analysis.totalItems} ${analysis.totalItems === 1 ? "item danificado foi identificado" : "itens danificados foram identificados"}.`,
+        title: "Análise concluída com sucesso! 🎉",
+        description: `${analysis.totalItems} ${analysis.totalItems === 1 ? "item danificado foi identificado" : "itens danificados foram identificados"} pelos dois modelos de IA.`,
       });
     } catch (error) {
       console.error("Erro na análise:", error);
@@ -76,6 +91,9 @@ export default function HomePage() {
         description: error instanceof Error ? error.message : "Não foi possível completar a análise. Tente novamente.",
       });
     } finally {
+      if (stageTimer) {
+        clearTimeout(stageTimer);
+      }
       setIsAnalyzing(false);
     }
   };
@@ -179,11 +197,14 @@ export default function HomePage() {
                       Análise Inteligente de Danos
                     </h2>
                     <p className="text-muted-foreground">
-                      Faça upload de imagens e receba um relatório detalhado sobre todos os
-                      danos identificados
+                      Análise em duas etapas: Visão (Llama 3.2 90B) + Raciocínio (DeepSeek R1)
                     </p>
                   </div>
-                  <UploadZone onAnalyze={handleAnalyze} isAnalyzing={isAnalyzing} />
+                  {isAnalyzing ? (
+                    <AnalysisProgress stage={analysisStage} />
+                  ) : (
+                    <UploadZone onAnalyze={handleAnalyze} isAnalyzing={isAnalyzing} />
+                  )}
                 </div>
               )}
 
