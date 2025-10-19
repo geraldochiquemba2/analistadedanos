@@ -1,8 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { DamageItemCard, type DamageSeverity } from "./DamageItemCard";
-import { FileText, Calendar } from "lucide-react";
+import { FileText, Calendar, LayoutGrid, List } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DamageList } from "./DamageList";
 
 export interface DamageItem {
   itemName: string;
@@ -100,19 +102,38 @@ export function AnalysisResult({ result }: AnalysisResultProps) {
         </CardContent>
       </Card>
 
-      <div>
-        <div className="flex items-center gap-2 mb-4">
-          <FileText className="h-5 w-5 text-muted-foreground" />
-          <h2 className="text-xl font-semibold">
-            Itens Danificados ({result.damageItems.length})
-          </h2>
-        </div>
-        <div className="grid gap-4 md:grid-cols-2">
-          {result.damageItems.map((item, index) => (
-            <DamageItemCard key={index} {...item} />
-          ))}
-        </div>
-      </div>
+      <Tabs defaultValue="grid" className="w-full">
+        <TabsList className="grid w-full max-w-md grid-cols-2" data-testid="tabs-view-selector">
+          <TabsTrigger value="grid" data-testid="tab-grid-view">
+            <LayoutGrid className="h-4 w-4 mr-2" />
+            Visualização em Grade
+          </TabsTrigger>
+          <TabsTrigger value="list" data-testid="tab-list-view">
+            <List className="h-4 w-4 mr-2" />
+            Lista de Danos
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="grid" className="mt-6">
+          <div>
+            <div className="flex items-center gap-2 mb-4">
+              <FileText className="h-5 w-5 text-muted-foreground" />
+              <h2 className="text-xl font-semibold">
+                Itens Danificados ({result.damageItems.length})
+              </h2>
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              {result.damageItems.map((item, index) => (
+                <DamageItemCard key={index} {...item} />
+              ))}
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="list" className="mt-6">
+          <DamageList damageItems={result.damageItems} />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
