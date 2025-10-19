@@ -71,7 +71,7 @@ Retorne APENAS o objeto JSON válido, sem markdown ou texto adicional.`,
 
   try {
     const completion = await groq.chat.completions.create({
-      model: "llama-3.2-90b-vision-preview",
+      model: "meta-llama/llama-4-scout-17b-16e-instruct",
       messages: [
         {
           role: "user",
@@ -80,18 +80,11 @@ Retorne APENAS o objeto JSON válido, sem markdown ou texto adicional.`,
       ],
       temperature: 0.3,
       max_tokens: 4000,
+      response_format: { type: "json_object" },
     });
 
     const responseText = completion.choices[0]?.message?.content || "{}";
-    
-    let jsonMatch = responseText.match(/\{[\s\S]*\}/);
-    let parsedResponse;
-    
-    if (jsonMatch) {
-      parsedResponse = JSON.parse(jsonMatch[0]);
-    } else {
-      parsedResponse = JSON.parse(responseText);
-    }
+    const parsedResponse = JSON.parse(responseText);
 
     if (!parsedResponse.damageItems || !Array.isArray(parsedResponse.damageItems)) {
       throw new Error("Resposta da IA em formato inválido");
