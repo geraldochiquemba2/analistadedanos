@@ -25,7 +25,7 @@ async function analyzeImagesWithGroq(
   const content: any[] = [
     {
       type: "text",
-      text: `Você é um especialista em análise de danos. Analise detalhadamente as imagens e o contexto fornecido para identificar TODOS os danos visíveis.
+      text: `Você é um especialista em análise de danos. Analise detalhadamente as imagens e o contexto fornecido para identificar ABSOLUTAMENTE TODOS os danos visíveis SEM NENHUM LIMITE DE QUANTIDADE.
 
 ${description ? `Contexto adicional fornecido pelo usuário: ${description}` : ""}
 
@@ -44,14 +44,20 @@ Por favor, forneça uma análise detalhada no seguinte formato JSON:
   ]
 }
 
-Regras importantes:
+Regras OBRIGATÓRIAS:
 - Analise CUIDADOSAMENTE cada imagem fornecida
-- Identifique TODOS os danos visíveis em todas as imagens
+- Identifique ABSOLUTAMENTE TODOS os danos visíveis em TODAS as imagens
+- NÃO LIMITE a quantidade de itens - liste CADA DANO que você conseguir identificar
+- Cada arranhão, rachadura, amassado, desgaste, mancha ou qualquer outro tipo de dano DEVE ser listado separadamente
+- Mesmo danos pequenos e superficiais devem ser incluídos na lista completa
 - Classifique severidade: "low" (dano superficial/estético), "moderate" (funcionalidade parcialmente afetada), "high" (dano estrutural/funcional grave)
 - Seja extremamente detalhado e profissional nas descrições
 - Use português brasileiro formal
 - Para cada dano, especifique sua localização precisa
-- Se houver múltiplas imagens do mesmo item, consolide em uma única entrada detalhada
+- Se houver múltiplas imagens do mesmo item, liste cada dano visível separadamente com sua localização específica
+- Liste TODO E QUALQUER dano que você conseguir ver, não importa quão pequeno
+
+IMPORTANTE: Não omita nenhum dano. A lista deve ser COMPLETA e EXAUSTIVA, incluindo todos os componentes danificados sem exceção.
 
 Retorne APENAS o objeto JSON válido, sem markdown ou texto adicional.`,
     },
@@ -79,7 +85,7 @@ Retorne APENAS o objeto JSON válido, sem markdown ou texto adicional.`,
         },
       ],
       temperature: 0.3,
-      max_tokens: 4000,
+      max_tokens: 32000,
       response_format: { type: "json_object" },
     });
 
