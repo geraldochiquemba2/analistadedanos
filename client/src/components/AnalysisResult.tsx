@@ -130,7 +130,7 @@ export function AnalysisResult({ result }: AnalysisResultProps) {
           </div>
         </TabsContent>
 
-        <TabsContent value="list" className="mt-6">
+        <TabsContent value="list" className="mt-6 w-full">
           <DamageList damageItems={result.damageItems} />
         </TabsContent>
       </Tabs>

@@ -28,7 +28,7 @@ const severityConfig = {
 
 export function DamageList({ damageItems, title = "Lista Completa de Danos Identificados" }: DamageListProps) {
   return (
-    <div className="space-y-4" data-testid="damage-list">
+    <div className="space-y-4 w-full" data-testid="damage-list">
       <div className="flex items-center gap-2">
         <FileText className="h-5 w-5 text-muted-foreground" />
         <h2 className="text-xl font-semibold">
@@ -36,7 +36,7 @@ export function DamageList({ damageItems, title = "Lista Completa de Danos Ident
         </h2>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-3 w-full">
         {damageItems.map((item, index) => {
           const config = severityConfig[item.severity];
           const Icon = config.icon;
