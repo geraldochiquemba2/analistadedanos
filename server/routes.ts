@@ -25,39 +25,57 @@ async function analyzeImagesWithGroq(
   const content: any[] = [
     {
       type: "text",
-      text: `Você é um especialista em análise de danos. Analise detalhadamente as imagens e o contexto fornecido para identificar ABSOLUTAMENTE TODOS os danos visíveis SEM NENHUM LIMITE DE QUANTIDADE.
+      text: `Você é um especialista em análise de danos. Siga esta metodologia OBRIGATÓRIA em 3 ETAPAS:
 
 ${description ? `Contexto adicional fornecido pelo usuário: ${description}` : ""}
 
-Por favor, forneça uma análise detalhada no seguinte formato JSON:
+ETAPA 1 - IDENTIFICAÇÃO DO OBJETO:
+Primeiro, identifique o tipo de objeto/bem na imagem (ex: veículo, imóvel, equipamento, etc.)
+
+ETAPA 2 - MAPEAMENTO DE COMPONENTES:
+Liste mentalmente TODOS os componentes/elementos que este tipo de objeto possui.
+
+Exemplo para VEÍCULOS (use como referência):
+- Elementos Externos: Carroceria, Para-choques (dianteiro/traseiro), Portas, Maçanetas, Capô, Tampa do porta-malas, Para-lamas, Para-brisa, Vidros laterais, Vidros traseiros, Retrovisores externos, Faróis, Lanternas traseiras, Luzes de freio, Setas, Rodas, Pneus, Grades, Emblemas, Antena, Teto solar, Aerofólio, Spoiler, Saias laterais
+- Elementos Internos Visíveis: Bancos, Volante, Painel de instrumentos, Console central, Porta-luvas, Cintos de segurança, Tapetes, Revestimentos de porta, Teto interno
+
+Para outros tipos de objetos, considere seus componentes específicos.
+
+ETAPA 3 - ANÁLISE SISTEMÁTICA DE DANOS:
+Para CADA componente visível na imagem:
+a) Verifique se está presente na imagem
+b) Se presente, examine cuidadosamente se há algum dano
+c) Se houver dano, liste-o separadamente com todos os detalhes
+
+FORMATO DE SAÍDA JSON:
 
 {
-  "summary": "Resumo geral completo da análise em português brasileiro, incluindo o tipo de bem analisado e extensão geral dos danos",
+  "summary": "Tipo de bem analisado + resumo geral da análise incluindo quantos componentes foram examinados e extensão geral dos danos",
   "damageItems": [
     {
-      "itemName": "Nome específico do item/componente danificado",
-      "itemType": "Categoria do item (ex: Componente Externo, Estrutura, Sistema Elétrico)",
+      "itemName": "Nome específico do componente danificado (ex: Para-choque Dianteiro, Porta Traseira Esquerda)",
+      "itemType": "Categoria do componente (ex: Elemento Externo - Carroceria, Iluminação, Vidros)",
       "severity": "low|moderate|high",
-      "description": "Descrição muito detalhada do dano observado, incluindo localização, dimensões aproximadas e características visuais",
+      "description": "Descrição muito detalhada do dano observado, incluindo: tipo de dano (arranhão/amassado/rachadura/etc), localização precisa no componente, dimensões aproximadas, características visuais",
       "estimatedImpact": "Impacto funcional, recomendações de reparo e urgência"
     }
   ]
 }
 
 Regras OBRIGATÓRIAS:
-- Analise CUIDADOSAMENTE cada imagem fornecida
-- Identifique ABSOLUTAMENTE TODOS os danos visíveis em TODAS as imagens
-- NÃO LIMITE a quantidade de itens - liste CADA DANO que você conseguir identificar
-- Cada arranhão, rachadura, amassado, desgaste, mancha ou qualquer outro tipo de dano DEVE ser listado separadamente
+- Examine SISTEMATICAMENTE cada componente visível na imagem
+- NÃO PULE nenhum componente - verifique todos que estão visíveis
+- Para CADA dano encontrado, crie uma entrada separada na lista
+- Identifique ABSOLUTAMENTE TODOS os danos visíveis SEM NENHUM LIMITE DE QUANTIDADE
+- Cada arranhão, rachadura, amassado, desgaste, mancha, quebra DEVE ser listado separadamente
 - Mesmo danos pequenos e superficiais devem ser incluídos na lista completa
 - Classifique severidade: "low" (dano superficial/estético), "moderate" (funcionalidade parcialmente afetada), "high" (dano estrutural/funcional grave)
 - Seja extremamente detalhado e profissional nas descrições
 - Use português brasileiro formal
-- Para cada dano, especifique sua localização precisa
-- Se houver múltiplas imagens do mesmo item, liste cada dano visível separadamente com sua localização específica
+- Para cada dano, especifique sua localização precisa no componente
 - Liste TODO E QUALQUER dano que você conseguir ver, não importa quão pequeno
 
-IMPORTANTE: Não omita nenhum dano. A lista deve ser COMPLETA e EXAUSTIVA, incluindo todos os componentes danificados sem exceção.
+IMPORTANTE: A lista deve ser COMPLETA e EXAUSTIVA. Verifique cada componente visível e liste todos os danos sem exceção. Não omita nada.
 
 Retorne APENAS o objeto JSON válido, sem markdown ou texto adicional.`,
     },
