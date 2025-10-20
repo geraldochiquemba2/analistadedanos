@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { AlertCircle, AlertTriangle, Info, FileText } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { AlertCircle, AlertTriangle, Info, FileText, DollarSign } from "lucide-react";
 import type { DamageItem } from "./AnalysisResult";
 
 interface DamageListProps {
@@ -84,6 +85,38 @@ export function DamageList({ damageItems, title = "Lista Completa de Danos Ident
                       {item.estimatedImpact}
                     </p>
                   </div>
+                )}
+                
+                {(item.priceNew || item.priceUsed || item.repairCost) && (
+                  <>
+                    <Separator />
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <DollarSign className="h-4 w-4 text-muted-foreground" />
+                        <h4 className="text-sm font-medium">Custos Estimados</h4>
+                      </div>
+                      <div className="grid grid-cols-1 gap-2 pl-6">
+                        {item.priceNew && (
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-muted-foreground">Preço Novo:</span>
+                            <span className="text-sm font-medium" data-testid={`text-price-new-${index}`}>{item.priceNew}</span>
+                          </div>
+                        )}
+                        {item.priceUsed && (
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-muted-foreground">Preço Usado:</span>
+                            <span className="text-sm font-medium" data-testid={`text-price-used-${index}`}>{item.priceUsed}</span>
+                          </div>
+                        )}
+                        {item.repairCost && (
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-muted-foreground">Custo de Reparo:</span>
+                            <span className="text-sm font-medium text-primary" data-testid={`text-repair-cost-${index}`}>{item.repairCost}</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </>
                 )}
               </CardContent>
             </Card>

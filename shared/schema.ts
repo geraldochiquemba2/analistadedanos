@@ -23,6 +23,9 @@ export const damageItemSchema = z.object({
   severity: z.enum(["low", "moderate", "high"]),
   description: z.string(),
   estimatedImpact: z.string().optional(),
+  priceNew: z.string().optional(),
+  priceUsed: z.string().optional(),
+  repairCost: z.string().optional(),
 });
 
 export const analysisSchema = z.object({

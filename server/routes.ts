@@ -157,6 +157,32 @@ a) Verifique se há algum dano descrito para esse componente
 b) Se houver dano, crie uma entrada SEPARADA para cada dano específico
 c) Liste APENAS os danos que foram CLARAMENTE IDENTIFICADOS na descrição visual
 
+TABELA DE PREÇOS DE REFERÊNCIA - ANGOLA (Kwanzas - KZ):
+
+VEÍCULOS:
+- Para-choque: Novo 150.000-300.000 KZ | Usado 50.000-150.000 KZ | Reparo 30.000-100.000 KZ
+- Porta: Novo 400.000-800.000 KZ | Usado 200.000-400.000 KZ | Reparo 50.000-200.000 KZ
+- Capô: Novo 300.000-600.000 KZ | Usado 150.000-300.000 KZ | Reparo 80.000-250.000 KZ
+- Para-lama: Novo 200.000-400.000 KZ | Usado 100.000-200.000 KZ | Reparo 40.000-150.000 KZ
+- Farol: Novo 150.000-400.000 KZ | Usado 80.000-200.000 KZ | Reparo/Troca 50.000-150.000 KZ
+- Retrovisor: Novo 80.000-200.000 KZ | Usado 40.000-100.000 KZ | Reparo 20.000-80.000 KZ
+- Vidro lateral: Novo 100.000-250.000 KZ | Usado 50.000-150.000 KZ | Troca 60.000-200.000 KZ
+- Para-brisa: Novo 150.000-400.000 KZ | Usado 80.000-200.000 KZ | Troca 100.000-300.000 KZ
+- Lanterna: Novo 80.000-200.000 KZ | Usado 40.000-100.000 KZ | Troca 50.000-150.000 KZ
+- Banco: Novo 200.000-500.000 KZ | Usado 100.000-250.000 KZ | Reparo 30.000-120.000 KZ
+- Volante: Novo 100.000-300.000 KZ | Usado 50.000-150.000 KZ | Troca 80.000-200.000 KZ
+- Painel: Novo 300.000-800.000 KZ | Usado 150.000-400.000 KZ | Reparo 100.000-300.000 KZ
+
+MÓVEIS:
+- Sofá: Novo 250.000-400.000 KZ | Usado 100.000-260.000 KZ
+- Cama: Novo 90.000-250.000 KZ | Usado 50.000-150.000 KZ
+- Mesa jantar: Novo 95.000-630.000 KZ | Usado 50.000-300.000 KZ
+- Cadeira: Novo 80.000-150.000 KZ | Usado 30.000-80.000 KZ
+- Guarda-roupa: Novo 520.000-800.000 KZ | Usado 250.000-520.000 KZ
+- Estante: Novo 200.000-500.000 KZ | Usado 90.000-300.000 KZ
+- Mesa centro: Novo 25.000-95.000 KZ | Usado 15.000-50.000 KZ
+- Cômoda: Novo 185.000-400.000 KZ | Usado 80.000-200.000 KZ
+
 FORMATO DE SAÍDA JSON OBRIGATÓRIO:
 
 {
@@ -171,7 +197,10 @@ FORMATO DE SAÍDA JSON OBRIGATÓRIO:
       - Localização EXATA usando termos direcionais (ex: 'no canto superior direito', 'na parte central inferior', 'na lateral esquerda próximo à borda superior')
       - Dimensões aproximadas (ex: '5cm de comprimento', 'área de 10x8cm')
       - Características visuais específicas",
-      "estimatedImpact": "Impacto funcional, recomendações de reparo e urgência"
+      "estimatedImpact": "Impacto funcional, recomendações de reparo e urgência",
+      "priceNew": "Preço estimado do componente NOVO em Kwanzas (baseado na tabela de referência acima, ex: '300.000 KZ' ou '200.000-400.000 KZ')",
+      "priceUsed": "Preço estimado do componente USADO/Segunda mão em Kwanzas (baseado na tabela de referência acima)",
+      "repairCost": "Custo estimado de REPARO em Kwanzas (se o dano for reparável, baseado na gravidade e tabela de referência)"
     }
   ]
 }
@@ -195,6 +224,18 @@ ESPECIFICAÇÃO DE LOCALIZAÇÃO (OBRIGATÓRIO):
   * Exemplos INCORRETOS: "na lateral" (falta especificar qual lateral e onde), "em cima" (vago)
 - Use pontos de referência quando possível (ex: "próximo à maçaneta", "abaixo do retrovisor", "ao lado do farol")
 - Evite termos vagos ou ambíguos - seja sempre específico e claro
+
+ESTIMATIVA DE PREÇOS (OBRIGATÓRIO):
+- Use a TABELA DE PREÇOS DE REFERÊNCIA fornecida acima para estimar custos
+- Para priceNew: consulte os valores de componentes novos na tabela
+- Para priceUsed: consulte os valores de componentes usados/segunda mão na tabela
+- Para repairCost: 
+  * Se severity="low": use 20-40% do valor de reparo da tabela
+  * Se severity="moderate": use 50-80% do valor de reparo da tabela
+  * Se severity="high": pode ser igual ou próximo ao valor de substituição (componente novo)
+- Se o componente não estiver na tabela, faça uma estimativa proporcional baseada em itens similares
+- SEMPRE forneça os três campos de preço (priceNew, priceUsed, repairCost) para cada dano
+- Use formato claro: "300.000 KZ" ou "200.000-400.000 KZ"
 
 IMPORTANTE CRÍTICO:
 - A lista deve conter APENAS danos que foram VISUALMENTE IDENTIFICADOS nas imagens

@@ -22,6 +22,9 @@ export interface DamageItem {
   severity: DamageSeverity;
   description: string;
   estimatedImpact?: string;
+  priceNew?: string;
+  priceUsed?: string;
+  repairCost?: string;
 }
 
 export interface AnalysisResultData {
