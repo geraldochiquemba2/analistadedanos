@@ -144,51 +144,48 @@ Sua tarefa é fazer uma análise SISTEMÁTICA E EXAUSTIVA seguindo esta metodolo
 ETAPA 1 - IDENTIFICAÇÃO DO OBJETO:
 Identifique o tipo de objeto/bem descrito na análise visual.
 
-ETAPA 2 - MAPEAMENTO COMPLETO DE COMPONENTES:
-Liste TODOS os componentes que este tipo de objeto possui (mesmo que não estejam visíveis na descrição).
+ETAPA 2 - IDENTIFICAÇÃO DOS COMPONENTES VISÍVEIS:
+Liste APENAS os componentes que foram MENCIONADOS e DESCRITOS na análise visual.
+NÃO liste componentes que não aparecem ou não foram mencionados na descrição visual.
 
-Para VEÍCULOS, considere:
-- Elementos Externos: Carroceria, Para-choques (dianteiro/traseiro), Portas (todas), Maçanetas, Capô, Tampa do porta-malas, Para-lamas (todos), Para-brisa, Vidros laterais, Vidros traseiros, Retrovisores (externo direito/esquerdo/interno), Faróis (direito/esquerdo), Lanternas traseiras, Luzes de freio, Setas, Rodas (todas 4), Pneus, Grades, Emblemas, Antena, Teto, Teto solar, Aerofólio, Spoiler, Saias laterais
-- Elementos Internos: Bancos (dianteiros/traseiros), Volante, Painel de instrumentos, Console central, Porta-luvas, Cintos de segurança, Tapetes, Revestimentos de porta, Teto interno, Ar-condicionado
-
-ETAPA 3 - ANÁLISE SISTEMÁTICA DE CADA COMPONENTE:
-Para CADA componente listado acima:
-a) Verifique se foi mencionado na descrição visual
-b) Se mencionado, verifique se há algum dano descrito
-c) Se houver dano, crie uma entrada SEPARADA para cada dano específico
+ETAPA 3 - ANÁLISE SISTEMÁTICA DOS DANOS VISÍVEIS:
+Para CADA componente mencionado na descrição visual:
+a) Verifique se há algum dano descrito para esse componente
+b) Se houver dano, crie uma entrada SEPARADA para cada dano específico
+c) Liste APENAS os danos que foram CLARAMENTE IDENTIFICADOS na descrição visual
 
 FORMATO DE SAÍDA JSON OBRIGATÓRIO:
 
 {
-  "summary": "Tipo de bem + resumo completo da análise incluindo quantos componentes foram examinados e extensão dos danos",
+  "summary": "Tipo de bem + resumo dos danos identificados visualmente nas imagens analisadas",
   "damageItems": [
     {
-      "itemName": "Nome ESPECÍFICO do componente (ex: Para-choque Dianteiro, Porta Traseira Esquerda, Farol Direito)",
+      "itemName": "Nome ESPECÍFICO do componente danificado (ex: Para-choque Dianteiro, Porta Traseira Esquerda, Farol Direito)",
       "itemType": "Categoria (ex: Elemento Externo - Carroceria, Iluminação, Vidros)",
       "severity": "low|moderate|high",
-      "description": "Descrição MUITO detalhada do dano: tipo (arranhão/amassado/rachadura/etc), localização PRECISA no componente, dimensões, características visuais",
+      "description": "Descrição MUITO detalhada do dano VISÍVEL: tipo (arranhão/amassado/rachadura/etc), localização PRECISA no componente, dimensões, características visuais",
       "estimatedImpact": "Impacto funcional, recomendações de reparo e urgência"
     }
   ]
 }
 
 REGRAS ABSOLUTAS:
-- Examine SISTEMATICAMENTE cada componente mencionado na descrição visual
-- NÃO pule nenhum componente - verifique TODOS
-- Para CADA dano encontrado, crie uma entrada SEPARADA
-- Liste ABSOLUTAMENTE TODOS os danos descritos SEM LIMITE
-- Cada arranhão, rachadura, amassado, desgaste, mancha, quebra = entrada separada
-- Inclua até danos pequenos e superficiais
+- Liste APENAS os danos que foram EXPLICITAMENTE MENCIONADOS na descrição visual
+- NÃO invente ou presuma danos que não foram descritos
+- NÃO liste componentes sem danos visíveis
+- Para CADA dano mencionado na descrição visual, crie uma entrada SEPARADA
+- Cada arranhão, rachadura, amassado, desgaste, mancha, quebra MENCIONADO = entrada separada
+- Inclua todos os danos descritos, mesmo os pequenos e superficiais
 - Severity: "low" (superficial/estético), "moderate" (função parcial), "high" (estrutural/grave)
-- Seja EXTREMAMENTE detalhado nas descrições
+- Seja EXTREMAMENTE detalhado nas descrições dos danos VISÍVEIS
 - Use português brasileiro formal
-- Especifique localização PRECISA de cada dano
+- Especifique localização PRECISA de cada dano conforme descrito
 
 IMPORTANTE CRÍTICO:
-- A lista deve ser COMPLETA e EXAUSTIVA
-- Não omita NADA mencionado na descrição visual
-- Se a descrição menciona "vários arranhões", liste cada um separadamente
-- Verifique CADA componente da lista de mapeamento
+- A lista deve conter APENAS danos que foram VISUALMENTE IDENTIFICADOS nas imagens
+- Se a descrição visual menciona "vários arranhões", liste cada um separadamente
+- NÃO adicione danos que não foram mencionados na descrição visual
+- Seja fiel à descrição visual - liste tudo que foi descrito, mas NADA além disso
 
 Retorne APENAS o objeto JSON válido, sem markdown ou texto adicional.`;
 
