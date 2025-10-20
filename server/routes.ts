@@ -160,10 +160,10 @@ FORMATO DE SAÍDA JSON OBRIGATÓRIO:
   "summary": "Tipo de bem + resumo dos danos identificados visualmente nas imagens analisadas",
   "damageItems": [
     {
-      "itemName": "Nome ESPECÍFICO do componente danificado (ex: Para-choque Dianteiro, Porta Traseira Esquerda, Farol Direito)",
+      "itemName": "Nome ESPECÍFICO do componente com LADO especificado (ex: Para-choque Dianteiro, Porta Traseira Esquerda, Farol Direito, Retrovisor Esquerdo, Para-lama Dianteiro Direito)",
       "itemType": "Categoria (ex: Elemento Externo - Carroceria, Iluminação, Vidros)",
       "severity": "low|moderate|high",
-      "description": "Descrição MUITO detalhada do dano VISÍVEL: tipo (arranhão/amassado/rachadura/etc), localização PRECISA no componente, dimensões, características visuais",
+      "description": "Descrição MUITO detalhada do dano VISÍVEL: tipo (arranhão/amassado/rachadura/etc), localização PRECISA no componente incluindo o LADO (esquerdo/direito/dianteiro/traseiro/superior/inferior/central), dimensões, características visuais",
       "estimatedImpact": "Impacto funcional, recomendações de reparo e urgência"
     }
   ]
@@ -179,7 +179,9 @@ REGRAS ABSOLUTAS:
 - Severity: "low" (superficial/estético), "moderate" (função parcial), "high" (estrutural/grave)
 - Seja EXTREMAMENTE detalhado nas descrições dos danos VISÍVEIS
 - Use português brasileiro formal
-- Especifique localização PRECISA de cada dano conforme descrito
+- SEMPRE especifique o LADO do componente (esquerdo, direito, dianteiro, traseiro, central, superior, inferior)
+- No campo "itemName", inclua o lado: "Porta Dianteira Esquerda" em vez de apenas "Porta"
+- Na descrição, especifique a posição exata do dano dentro do componente
 
 IMPORTANTE CRÍTICO:
 - A lista deve conter APENAS danos que foram VISUALMENTE IDENTIFICADOS nas imagens
