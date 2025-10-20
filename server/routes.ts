@@ -60,21 +60,24 @@ Sua tarefa:
 1. Identifique o tipo de objeto/bem (veículo, imóvel, equipamento, etc.)
 2. Liste TODOS os componentes visíveis na imagem
 3. Para cada componente visível, descreva DETALHADAMENTE:
-   - O componente em si
+   - O componente em si COM O LADO ESPECIFICADO (ex: "Porta Dianteira Esquerda" e não apenas "Porta")
    - Seu estado (perfeito, danificado, sujo, etc.)
    - Todos os danos visíveis (arranhões, amassados, rachaduras, desgastes, manchas, etc.)
-   - Localização precisa de cada dano
+   - Localização MUITO PRECISA de cada dano usando termos direcionais claros
    - Tamanho aproximado dos danos
 
-Exemplo para VEÍCULOS - componentes possíveis:
-- Externos: Carroceria, Para-choques, Portas, Maçanetas, Capô, Porta-malas, Para-lamas, Para-brisa, Vidros, Retrovisores, Faróis, Lanternas, Rodas, Pneus, Grades, Emblemas
-- Internos: Bancos, Volante, Painel, Console, Tapetes, Revestimentos
+Exemplo para VEÍCULOS - componentes possíveis COM LADOS:
+- Externos: Para-choque Dianteiro, Para-choque Traseiro, Porta Dianteira Esquerda, Porta Dianteira Direita, Porta Traseira Esquerda, Porta Traseira Direita, Capô, Tampa do Porta-malas, Para-lama Dianteiro Esquerdo, Para-lama Dianteiro Direito, Para-lama Traseiro Esquerdo, Para-lama Traseiro Direito, Para-brisa, Vidro Lateral Dianteiro Esquerdo, Vidro Lateral Dianteiro Direito, Retrovisor Externo Esquerdo, Retrovisor Externo Direito, Farol Dianteiro Esquerdo, Farol Dianteiro Direito, Lanterna Traseira Esquerda, Lanterna Traseira Direita, Roda Dianteira Esquerda, Roda Dianteira Direita, Roda Traseira Esquerda, Roda Traseira Direita
+- Internos: Banco Dianteiro Esquerdo (motorista), Banco Dianteiro Direito, Banco Traseiro (especificar lado se relevante)
 
-IMPORTANTE:
+IMPORTANTE - ESPECIFICAÇÃO DE LOCALIZAÇÃO:
 - Seja EXTREMAMENTE detalhado
+- SEMPRE especifique o LADO: esquerdo, direito, dianteiro, traseiro, central
+- Para cada dano, especifique também a POSIÇÃO no componente: superior, inferior, lateral, central
+- Use referências claras: "no canto superior esquerdo", "na parte inferior central", "na lateral direita próximo à maçaneta"
 - Não omita NENHUM componente visível
 - Não omita NENHUM dano, por menor que seja
-- Descreva a localização precisa de cada dano
+- Evite ambiguidades - seja específico sobre ONDE exatamente está o dano
 
 Formato de resposta (texto livre, muito detalhado):`,
     },
@@ -160,10 +163,14 @@ FORMATO DE SAÍDA JSON OBRIGATÓRIO:
   "summary": "Tipo de bem + resumo dos danos identificados visualmente nas imagens analisadas",
   "damageItems": [
     {
-      "itemName": "Nome ESPECÍFICO do componente com LADO especificado (ex: Para-choque Dianteiro, Porta Traseira Esquerda, Farol Direito, Retrovisor Esquerdo, Para-lama Dianteiro Direito)",
+      "itemName": "Nome ESPECÍFICO do componente com LADO completo (ex: Para-choque Dianteiro, Porta Traseira Esquerda, Farol Dianteiro Direito, Retrovisor Externo Esquerdo, Para-lama Dianteiro Direito)",
       "itemType": "Categoria (ex: Elemento Externo - Carroceria, Iluminação, Vidros)",
       "severity": "low|moderate|high",
-      "description": "Descrição MUITO detalhada do dano VISÍVEL: tipo (arranhão/amassado/rachadura/etc), localização PRECISA no componente incluindo o LADO (esquerdo/direito/dianteiro/traseiro/superior/inferior/central), dimensões, características visuais",
+      "description": "Descrição MUITO detalhada do dano VISÍVEL com LOCALIZAÇÃO PRECISA E SEM AMBIGUIDADE: 
+      - Tipo de dano (arranhão/amassado/rachadura/etc)
+      - Localização EXATA usando termos direcionais (ex: 'no canto superior direito', 'na parte central inferior', 'na lateral esquerda próximo à borda superior')
+      - Dimensões aproximadas (ex: '5cm de comprimento', 'área de 10x8cm')
+      - Características visuais específicas",
       "estimatedImpact": "Impacto funcional, recomendações de reparo e urgência"
     }
   ]
@@ -179,9 +186,15 @@ REGRAS ABSOLUTAS:
 - Severity: "low" (superficial/estético), "moderate" (função parcial), "high" (estrutural/grave)
 - Seja EXTREMAMENTE detalhado nas descrições dos danos VISÍVEIS
 - Use português brasileiro formal
-- SEMPRE especifique o LADO do componente (esquerdo, direito, dianteiro, traseiro, central, superior, inferior)
-- No campo "itemName", inclua o lado: "Porta Dianteira Esquerda" em vez de apenas "Porta"
-- Na descrição, especifique a posição exata do dano dentro do componente
+
+ESPECIFICAÇÃO DE LOCALIZAÇÃO (OBRIGATÓRIO):
+- SEMPRE especifique o LADO completo do componente no itemName (ex: "Porta Dianteira Esquerda", "Para-lama Traseiro Direito", "Farol Dianteiro Esquerdo")
+- NUNCA use apenas "Porta" ou "Para-lama" - sempre inclua dianteiro/traseiro E esquerdo/direito
+- Na descrição, especifique a posição EXATA do dano usando termos direcionais múltiplos:
+  * Exemplos CORRETOS: "na parte superior esquerda", "no canto inferior direito", "na região central inferior", "na lateral direita próximo à parte superior"
+  * Exemplos INCORRETOS: "na lateral" (falta especificar qual lateral e onde), "em cima" (vago)
+- Use pontos de referência quando possível (ex: "próximo à maçaneta", "abaixo do retrovisor", "ao lado do farol")
+- Evite termos vagos ou ambíguos - seja sempre específico e claro
 
 IMPORTANTE CRÍTICO:
 - A lista deve conter APENAS danos que foram VISUALMENTE IDENTIFICADOS nas imagens
