@@ -22,7 +22,7 @@ async function analyzeImagesWithGroq(
     throw new Error("GROQ_API_KEY não configurada");
   }
 
-  console.log("🔍 ETAPA 1: Análise visual com Llama 3.2 90B Vision...");
+  console.log("🔍 ETAPA 1: Análise visual com Llama 3.2 11B Vision...");
   
   // ETAPA 1: Llama Vision analisa as imagens
   const visualAnalysis = await analyzeWithVision(files, description);
@@ -84,7 +84,7 @@ Formato de resposta (texto livre, muito detalhado):`,
 
   try {
     const completion = await groq.chat.completions.create({
-      model: "llama-3.2-90b-vision-preview",
+      model: "llama-3.2-11b-vision-preview",
       messages: [
         {
           role: "user",
