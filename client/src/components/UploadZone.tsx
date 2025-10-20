@@ -4,15 +4,36 @@ import { Upload, X, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface UploadZoneProps {
-  onAnalyze: (files: File[], description: string) => void;
+  onAnalyze: (files: File[], description: string, assetInfo: AssetInfo) => void;
   isAnalyzing?: boolean;
+}
+
+export interface AssetInfo {
+  assetType: string;
+  brand?: string;
+  model?: string;
+  year?: string;
+  quality?: string;
 }
 
 export function UploadZone({ onAnalyze, isAnalyzing = false }: UploadZoneProps) {
   const [files, setFiles] = useState<File[]>([]);
   const [description, setDescription] = useState("");
+  const [assetType, setAssetType] = useState("vehicle");
+  const [brand, setBrand] = useState("");
+  const [model, setModel] = useState("");
+  const [year, setYear] = useState("");
+  const [quality, setQuality] = useState("medium");
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setFiles((prev) => [...prev, ...acceptedFiles].slice(0, 10));
@@ -31,7 +52,14 @@ export function UploadZone({ onAnalyze, isAnalyzing = false }: UploadZoneProps) 
 
   const handleAnalyze = () => {
     if (files.length > 0) {
-      onAnalyze(files, description);
+      const assetInfo: AssetInfo = {
+        assetType,
+        brand: brand.trim() || undefined,
+        model: model.trim() || undefined,
+        year: year.trim() || undefined,
+        quality,
+      };
+      onAnalyze(files, description, assetInfo);
     }
   };
 
@@ -87,15 +115,101 @@ export function UploadZone({ onAnalyze, isAnalyzing = false }: UploadZoneProps) 
         </div>
       )}
 
+      <div className="space-y-4 p-4 bg-muted/30 rounded-md border border-border">
+        <h3 className="text-sm font-semibold">Informações do Bem Segurado</h3>
+        
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="space-y-2">
+            <Label htmlFor="asset-type">Tipo de Bem *</Label>
+            <Select
+              value={assetType}
+              onValueChange={setAssetType}
+              disabled={isAnalyzing}
+            >
+              <SelectTrigger id="asset-type" data-testid="select-asset-type">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="vehicle">Veículo</SelectItem>
+                <SelectItem value="furniture">Móvel</SelectItem>
+                <SelectItem value="real_estate">Imóvel</SelectItem>
+                <SelectItem value="other">Outro</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="quality">Categoria de Qualidade *</Label>
+            <Select
+              value={quality}
+              onValueChange={setQuality}
+              disabled={isAnalyzing}
+            >
+              <SelectTrigger id="quality" data-testid="select-quality">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="premium">Premium/Luxo</SelectItem>
+                <SelectItem value="medium">Médio</SelectItem>
+                <SelectItem value="economy">Econômico</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-3">
+          <div className="space-y-2">
+            <Label htmlFor="brand">Marca</Label>
+            <Input
+              id="brand"
+              placeholder="Ex: Toyota, IKEA"
+              value={brand}
+              onChange={(e) => setBrand(e.target.value)}
+              disabled={isAnalyzing}
+              data-testid="input-brand"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="model">Modelo</Label>
+            <Input
+              id="model"
+              placeholder="Ex: RAV4, Hemnes"
+              value={model}
+              onChange={(e) => setModel(e.target.value)}
+              disabled={isAnalyzing}
+              data-testid="input-model"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="year">Ano</Label>
+            <Input
+              id="year"
+              placeholder="Ex: 2019"
+              value={year}
+              onChange={(e) => setYear(e.target.value)}
+              disabled={isAnalyzing}
+              maxLength={4}
+              data-testid="input-year"
+            />
+          </div>
+        </div>
+
+        <p className="text-xs text-muted-foreground">
+          💡 Essas informações ajudam a calcular preços mais precisos baseados no mercado angolano
+        </p>
+      </div>
+
       <div className="space-y-2">
         <Label htmlFor="description">Descrição Adicional (Opcional)</Label>
         <Textarea
           id="description"
-          placeholder="Descreva o contexto dos danos, tipo de bem, circunstâncias, etc..."
+          placeholder="Descreva o contexto dos danos, circunstâncias, etc..."
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           disabled={isAnalyzing}
-          rows={4}
+          rows={3}
           className="resize-none"
           data-testid="input-description"
         />

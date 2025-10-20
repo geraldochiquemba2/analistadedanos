@@ -26,7 +26,8 @@ const groq = new Groq({
 
 async function analyzeImagesWithGroq(
   files: Express.Multer.File[],
-  description: string
+  description: string,
+  assetInfo: any = {}
 ): Promise<any> {
   if (!process.env.GROQ_API_KEY) {
     throw new Error("GROQ_API_KEY não configurada");
@@ -40,7 +41,7 @@ async function analyzeImagesWithGroq(
   console.log("🧠 ETAPA 2: Raciocínio profundo com Llama 3.3 70B...");
   
   // ETAPA 2: Llama 3.3 70B faz análise sistemática profunda
-  const deepAnalysis = await analyzeWithReasoning(visualAnalysis, description);
+  const deepAnalysis = await analyzeWithReasoning(visualAnalysis, description, assetInfo);
   
   return deepAnalysis;
 }
@@ -132,9 +133,36 @@ Formato de resposta (texto livre, muito detalhado):`,
 
 async function analyzeWithReasoning(
   visualDescription: string,
-  userDescription: string
+  userDescription: string,
+  assetInfo: any = {}
 ): Promise<any> {
+  const assetContext = [];
+  if (assetInfo.assetType) {
+    const typeMap: any = {
+      vehicle: "Veículo",
+      furniture: "Móvel",
+      real_estate: "Imóvel",
+      other: "Outro"
+    };
+    assetContext.push(`Tipo: ${typeMap[assetInfo.assetType] || assetInfo.assetType}`);
+  }
+  if (assetInfo.brand) assetContext.push(`Marca: ${assetInfo.brand}`);
+  if (assetInfo.model) assetContext.push(`Modelo: ${assetInfo.model}`);
+  if (assetInfo.year) assetContext.push(`Ano: ${assetInfo.year}`);
+  if (assetInfo.quality) {
+    const qualityMap: any = {
+      premium: "Premium/Luxo",
+      medium: "Médio",
+      economy: "Econômico"
+    };
+    assetContext.push(`Categoria: ${qualityMap[assetInfo.quality] || assetInfo.quality}`);
+  }
+  
   const prompt = `Você é um especialista em análise sistemática de danos com raciocínio avançado. 
+
+INFORMAÇÕES DO BEM SEGURADO:
+${assetContext.length > 0 ? assetContext.join(" | ") : "Não fornecido"}
+⚠️ IMPORTANTE: Use essas informações para ajustar os preços conforme os fatores de ajuste especificados!
 
 CONTEXTO DO USUÁRIO:
 ${userDescription ? userDescription : "Não fornecido"}
@@ -347,7 +375,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     async (req, res) => {
       try {
         const files = req.files as Express.Multer.File[];
-        const { description = "" } = req.body;
+        const { description = "", assetInfo = "{}" } = req.body;
+        
+        let parsedAssetInfo;
+        try {
+          parsedAssetInfo = JSON.parse(assetInfo);
+        } catch {
+          parsedAssetInfo = {};
+        }
 
         if (!files || files.length === 0) {
           return res.status(400).json({ error: "Nenhuma imagem fornecida" });
@@ -360,7 +395,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           });
         }
 
-        const groqResponse = await analyzeImagesWithGroq(files, description);
+        const groqResponse = await analyzeImagesWithGroq(files, description, parsedAssetInfo);
 
         const damageItems = groqResponse.damageItems || [];
         

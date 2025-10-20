@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { UploadZone } from "@/components/UploadZone";
+import { UploadZone, type AssetInfo } from "@/components/UploadZone";
 import { AnalysisResult, type AnalysisResultData } from "@/components/AnalysisResult";
 import { AnalysisProgress } from "@/components/AnalysisProgress";
 import { HistoryPanel } from "@/components/HistoryPanel";
@@ -37,7 +37,7 @@ export default function HomePage() {
     }
   };
 
-  const handleAnalyze = async (files: File[], description: string) => {
+  const handleAnalyze = async (files: File[], description: string, assetInfo: AssetInfo) => {
     setIsAnalyzing(true);
     setAnalysisStage("vision");
     
@@ -49,6 +49,7 @@ export default function HomePage() {
         formData.append("images", file);
       });
       formData.append("description", description);
+      formData.append("assetInfo", JSON.stringify(assetInfo));
 
       // Transição para etapa de raciocínio após 3 segundos
       stageTimer = setTimeout(() => {
