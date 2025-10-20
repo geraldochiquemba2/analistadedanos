@@ -7,7 +7,14 @@ import multer from "multer";
 
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 10 * 1024 * 1024 },
+  limits: { fileSize: 4 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Apenas arquivos de imagem são permitidos'));
+    }
+  },
 });
 
 const groq = new Groq({
@@ -22,7 +29,7 @@ async function analyzeImagesWithGroq(
     throw new Error("GROQ_API_KEY não configurada");
   }
 
-  console.log("🔍 ETAPA 1: Análise visual com Llama 3.2 11B Vision...");
+  console.log("🔍 ETAPA 1: Análise visual com Llama 4 Scout Vision...");
   
   // ETAPA 1: Llama Vision analisa as imagens
   const visualAnalysis = await analyzeWithVision(files, description);
@@ -84,7 +91,7 @@ Formato de resposta (texto livre, muito detalhado):`,
 
   try {
     const completion = await groq.chat.completions.create({
-      model: "llama-3.2-11b-vision-preview",
+      model: "meta-llama/llama-4-scout-17b-16e-instruct",
       messages: [
         {
           role: "user",
@@ -92,7 +99,7 @@ Formato de resposta (texto livre, muito detalhado):`,
         },
       ],
       temperature: 0.3,
-      max_tokens: 8192,
+      max_tokens: 2048,
     });
 
     const visualDescription = completion.choices[0]?.message?.content || "";
@@ -187,7 +194,7 @@ Retorne APENAS o objeto JSON válido, sem markdown ou texto adicional.`;
         },
       ],
       temperature: 0.6,
-      max_tokens: 25000,
+      max_tokens: 8192,
       response_format: { type: "json_object" },
     });
 
@@ -212,7 +219,7 @@ Retorne APENAS o objeto JSON válido, sem markdown ou texto adicional.`;
 export async function registerRoutes(app: Express): Promise<Server> {
   app.post(
     "/api/analyze",
-    upload.array("images", 10),
+    upload.array("images", 5),
     async (req, res) => {
       try {
         const files = req.files as Express.Multer.File[];

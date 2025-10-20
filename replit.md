@@ -10,6 +10,15 @@ The application serves as an enterprise-grade damage assessment tool requiring p
 
 Preferred communication style: Simple, everyday language.
 
+## Recent Changes
+
+**October 20, 2025 - Vision Model Update**
+- Updated from deprecated `llama-3.2-11b-vision-preview` to `meta-llama/llama-4-scout-17b-16e-instruct`
+- Implemented Groq API constraints: 5 image maximum, 4MB per image
+- Added MIME type validation for image uploads
+- Reduced token limits for better API compatibility (vision: 2048, reasoning: 8192)
+- Two-stage analysis pipeline now uses Llama 4 Scout for vision and DeepSeek R1 for reasoning
+
 ## System Architecture
 
 ### Frontend Architecture
@@ -52,8 +61,9 @@ Preferred communication style: Simple, everyday language.
 
 **File Upload**: Multer middleware for handling multipart/form-data with:
 - In-memory storage
-- 10MB file size limit
-- Image-only file type restriction
+- 4MB file size limit per image (Groq API constraint)
+- Maximum 5 images per request (Groq API constraint)
+- Image-only file type restriction (MIME type validation)
 
 **Development Features**:
 - Hot Module Replacement (HMR) via Vite
@@ -92,12 +102,16 @@ Preferred communication style: Simple, everyday language.
 
 **AI/ML Service**: 
 - **Groq API** - Primary AI service for image analysis
-  - Vision model for damage detection and classification
-  - Structured JSON response format
-  - API key authentication via environment variables
-  - Detailed prompt engineering for damage identification with severity classification
+  - **Vision Model**: `meta-llama/llama-4-scout-17b-16e-instruct` (Llama 4 Scout) for image understanding
+  - **Reasoning Model**: `deepseek-r1-distill-llama-70b` for deep analysis and structured JSON output
+  - Two-stage analysis pipeline:
+    1. Vision stage: Detailed visual component and damage identification
+    2. Reasoning stage: Systematic analysis with severity classification
+  - API constraints enforced: ≤5 images, ≤4MB per image
+  - Structured JSON response format with damage items array
+  - API key authentication via GROQ_API_KEY environment variable
 
-**Design Rationale**: Groq was chosen for its vision capabilities and ability to return structured JSON responses, enabling consistent damage classification with severity levels (low/moderate/high) and detailed descriptions.
+**Design Rationale**: Groq was chosen for its vision capabilities and ability to return structured JSON responses, enabling consistent damage classification with severity levels (low/moderate/high) and detailed descriptions. The two-stage pipeline leverages specialized models for optimal accuracy.
 
 **Database Service**:
 - **Neon Database** - Serverless PostgreSQL
