@@ -7,7 +7,10 @@ import multer from "multer";
 
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 4 * 1024 * 1024 },
+  limits: { 
+    fileSize: 2990000,
+    files: 5
+  },
   fileFilter: (_req, file, cb) => {
     if (file.mimetype.startsWith('image/')) {
       cb(null, true);
@@ -34,10 +37,10 @@ async function analyzeImagesWithGroq(
   // ETAPA 1: Llama Vision analisa as imagens
   const visualAnalysis = await analyzeWithVision(files, description);
   
-  console.log("🧠 ETAPA 2: Raciocínio profundo com DeepSeek R1...");
+  console.log("🧠 ETAPA 2: Raciocínio profundo com Llama 3.3 70B...");
   
-  // ETAPA 2: DeepSeek R1 faz análise sistemática profunda
-  const deepAnalysis = await analyzeWithDeepSeek(visualAnalysis, description);
+  // ETAPA 2: Llama 3.3 70B faz análise sistemática profunda
+  const deepAnalysis = await analyzeWithReasoning(visualAnalysis, description);
   
   return deepAnalysis;
 }
@@ -80,11 +83,19 @@ Formato de resposta (texto livre, muito detalhado):`,
   for (const file of files) {
     const base64Image = file.buffer.toString("base64");
     const mimeType = file.mimetype || "image/jpeg";
+    const dataUrl = `data:${mimeType};base64,${base64Image}`;
+    
+    const dataUrlSize = Buffer.byteLength(dataUrl, 'utf8');
+    if (dataUrlSize > 4000000) {
+      const error: any = new Error("Imagem muito grande após codificação. Cada imagem deve ter menos de 3MB.");
+      error.status = 400;
+      throw error;
+    }
     
     content.push({
       type: "image_url",
       image_url: {
-        url: `data:${mimeType};base64,${base64Image}`,
+        url: dataUrl,
       },
     });
   }
@@ -108,18 +119,15 @@ Formato de resposta (texto livre, muito detalhado):`,
       throw new Error("Análise visual não retornou descrição");
     }
 
-    console.log("✅ Análise visual concluída:", visualDescription.substring(0, 200) + "...");
+    console.log("✅ Análise visual concluída");
     return visualDescription;
   } catch (error) {
     console.error("Erro na análise visual:", error);
-    if (error instanceof Error) {
-      throw new Error(`Falha na análise visual: ${error.message}`);
-    }
-    throw new Error("Falha na análise visual");
+    throw error;
   }
 }
 
-async function analyzeWithDeepSeek(
+async function analyzeWithReasoning(
   visualDescription: string,
   userDescription: string
 ): Promise<any> {
@@ -186,7 +194,7 @@ Retorne APENAS o objeto JSON válido, sem markdown ou texto adicional.`;
 
   try {
     const completion = await groq.chat.completions.create({
-      model: "deepseek-r1-distill-llama-70b",
+      model: "llama-3.3-70b-versatile",
       messages: [
         {
           role: "user",
@@ -202,7 +210,7 @@ Retorne APENAS o objeto JSON válido, sem markdown ou texto adicional.`;
     const parsedResponse = JSON.parse(responseText);
 
     if (!parsedResponse.damageItems || !Array.isArray(parsedResponse.damageItems)) {
-      throw new Error("Resposta do DeepSeek em formato inválido");
+      throw new Error("Resposta do modelo em formato inválido");
     }
 
     console.log(`✅ Análise profunda concluída: ${parsedResponse.damageItems.length} danos identificados`);
@@ -219,7 +227,35 @@ Retorne APENAS o objeto JSON válido, sem markdown ou texto adicional.`;
 export async function registerRoutes(app: Express): Promise<Server> {
   app.post(
     "/api/analyze",
-    upload.array("images", 5),
+    (req, res, next) => {
+      upload.array("images", 5)(req, res, (err) => {
+        if (err instanceof multer.MulterError) {
+          if (err.code === 'LIMIT_FILE_SIZE') {
+            return res.status(400).json({ 
+              error: "Arquivo muito grande",
+              details: "Cada imagem deve ter no máximo 3MB"
+            });
+          }
+          if (err.code === 'LIMIT_FILE_COUNT') {
+            return res.status(400).json({ 
+              error: "Muitas imagens",
+              details: "Envie no máximo 5 imagens por análise"
+            });
+          }
+          return res.status(400).json({ 
+            error: "Erro no upload",
+            details: err.message
+          });
+        }
+        if (err) {
+          return res.status(400).json({ 
+            error: "Arquivo inválido",
+            details: err.message
+          });
+        }
+        next();
+      });
+    },
     async (req, res) => {
       try {
         const files = req.files as Express.Multer.File[];
@@ -273,9 +309,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const analysis = await storage.createAnalysis(validated);
 
         res.json(analysis);
-      } catch (error) {
+      } catch (error: any) {
         console.error("Erro na análise:", error);
-        res.status(500).json({
+        const statusCode = error.status || 500;
+        res.status(statusCode).json({
           error: "Erro ao processar análise",
           details: error instanceof Error ? error.message : "Erro desconhecido",
         });

@@ -12,12 +12,13 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
-**October 20, 2025 - Vision Model Update**
-- Updated from deprecated `llama-3.2-11b-vision-preview` to `meta-llama/llama-4-scout-17b-16e-instruct`
-- Implemented Groq API constraints: 5 image maximum, 4MB per image
+**October 20, 2025 - Model Updates**
+- Updated vision model from deprecated `llama-3.2-11b-vision-preview` to `meta-llama/llama-4-scout-17b-16e-instruct`
+- Updated reasoning model from deprecated `deepseek-r1-distill-llama-70b` to `llama-3.3-70b-versatile`
+- Implemented Groq API constraints: 5 image maximum, 3MB per raw image (≤4MB after base64 encoding)
 - Added MIME type validation for image uploads
-- Reduced token limits for better API compatibility (vision: 2048, reasoning: 8192)
-- Two-stage analysis pipeline now uses Llama 4 Scout for vision and DeepSeek R1 for reasoning
+- Optimized token limits for better API compatibility (vision: 2048, reasoning: 8192)
+- Two-stage analysis pipeline now uses Llama 4 Scout for vision and Llama 3.3 70B for reasoning
 
 ## System Architecture
 
@@ -61,7 +62,7 @@ Preferred communication style: Simple, everyday language.
 
 **File Upload**: Multer middleware for handling multipart/form-data with:
 - In-memory storage
-- 4MB file size limit per image (Groq API constraint)
+- 3MB file size limit per image (ensures <4MB after base64 encoding for Groq API)
 - Maximum 5 images per request (Groq API constraint)
 - Image-only file type restriction (MIME type validation)
 
@@ -102,16 +103,16 @@ Preferred communication style: Simple, everyday language.
 
 **AI/ML Service**: 
 - **Groq API** - Primary AI service for image analysis
-  - **Vision Model**: `meta-llama/llama-4-scout-17b-16e-instruct` (Llama 4 Scout) for image understanding
-  - **Reasoning Model**: `deepseek-r1-distill-llama-70b` for deep analysis and structured JSON output
+  - **Vision Model**: `meta-llama/llama-4-scout-17b-16e-instruct` (Llama 4 Scout) - Preview model for image understanding
+  - **Reasoning Model**: `llama-3.3-70b-versatile` (Llama 3.3 70B) - Production model for deep analysis and structured JSON output
   - Two-stage analysis pipeline:
-    1. Vision stage: Detailed visual component and damage identification
-    2. Reasoning stage: Systematic analysis with severity classification
-  - API constraints enforced: ≤5 images, ≤4MB per image
-  - Structured JSON response format with damage items array
+    1. Vision stage: Detailed visual component and damage identification using multimodal capabilities
+    2. Reasoning stage: Systematic analysis with severity classification and structured output
+  - API constraints enforced: ≤5 images per request, ≤3MB per raw image (≤4MB after base64 encoding)
+  - JSON mode support for structured damage items array
   - API key authentication via GROQ_API_KEY environment variable
 
-**Design Rationale**: Groq was chosen for its vision capabilities and ability to return structured JSON responses, enabling consistent damage classification with severity levels (low/moderate/high) and detailed descriptions. The two-stage pipeline leverages specialized models for optimal accuracy.
+**Design Rationale**: Groq was chosen for its vision capabilities and ability to return structured JSON responses, enabling consistent damage classification with severity levels (low/moderate/high) and detailed descriptions. The two-stage pipeline leverages specialized models for optimal accuracy, combining Llama 4 Scout's multimodal vision with Llama 3.3 70B's advanced reasoning.
 
 **Database Service**:
 - **Neon Database** - Serverless PostgreSQL
