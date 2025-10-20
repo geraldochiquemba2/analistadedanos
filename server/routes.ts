@@ -183,7 +183,7 @@ MÓVEIS:
 - Mesa centro: Novo 25.000-95.000 KZ | Usado 15.000-50.000 KZ
 - Cômoda: Novo 185.000-400.000 KZ | Usado 80.000-200.000 KZ
 
-FORMATO DE SAÍDA JSON OBRIGATÓRIO:
+FORMATO DE SAÍDA JSON OBRIGATÓRIO (TODOS OS CAMPOS SÃO OBRIGATÓRIOS):
 
 {
   "summary": "Tipo de bem + resumo dos danos identificados visualmente nas imagens analisadas",
@@ -198,11 +198,23 @@ FORMATO DE SAÍDA JSON OBRIGATÓRIO:
       - Dimensões aproximadas (ex: '5cm de comprimento', 'área de 10x8cm')
       - Características visuais específicas",
       "estimatedImpact": "Impacto funcional, recomendações de reparo e urgência",
-      "priceNew": "Preço estimado do componente NOVO em Kwanzas (baseado na tabela de referência acima, ex: '300.000 KZ' ou '200.000-400.000 KZ')",
-      "priceUsed": "Preço estimado do componente USADO/Segunda mão em Kwanzas (baseado na tabela de referência acima)",
-      "repairCost": "Custo estimado de REPARO em Kwanzas (se o dano for reparável, baseado na gravidade e tabela de referência)"
+      "priceNew": "OBRIGATÓRIO - Preço do componente NOVO em Kwanzas (ex: '300.000 KZ' ou '200.000-400.000 KZ')",
+      "priceUsed": "OBRIGATÓRIO - Preço do componente USADO/Segunda mão em Kwanzas (ex: '150.000 KZ' ou '100.000-200.000 KZ')",
+      "repairCost": "OBRIGATÓRIO - Custo estimado de REPARO em Kwanzas (ex: '80.000 KZ' ou '50.000-120.000 KZ')"
     }
   ]
+}
+
+EXEMPLO COMPLETO DE UM ITEM:
+{
+  "itemName": "Para-choque Dianteiro",
+  "itemType": "Elemento Externo - Carroceria",
+  "severity": "high",
+  "description": "Amassado profundo na parte lateral esquerda, com aproximadamente 15 cm de comprimento e 5 cm de profundidade. Pequenos rasgos na parte inferior central, com cerca de 3 cm de comprimento",
+  "estimatedImpact": "Impacto estrutural, recomendação de reparo ou substituição, urgência alta",
+  "priceNew": "150.000-300.000 KZ",
+  "priceUsed": "50.000-150.000 KZ",
+  "repairCost": "80.000-100.000 KZ"
 }
 
 REGRAS ABSOLUTAS:
@@ -264,6 +276,12 @@ Retorne APENAS o objeto JSON válido, sem markdown ou texto adicional.`;
 
     if (!parsedResponse.damageItems || !Array.isArray(parsedResponse.damageItems)) {
       throw new Error("Resposta do modelo em formato inválido");
+    }
+
+    // Debug: verificar se os preços estão sendo retornados
+    const firstItem = parsedResponse.damageItems[0];
+    if (firstItem) {
+      console.log('🔍 DEBUG - Primeiro item:', JSON.stringify(firstItem, null, 2));
     }
 
     console.log(`✅ Análise profunda concluída: ${parsedResponse.damageItems.length} danos identificados`);
