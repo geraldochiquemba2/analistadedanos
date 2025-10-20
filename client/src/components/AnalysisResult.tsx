@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DamageList } from "./DamageList";
 import { ExportButton } from "./ExportButton";
+import { FinancialSummary } from "./FinancialSummary";
 import {
   Select,
   SelectContent,
@@ -75,6 +76,8 @@ export function AnalysisResult({ result }: AnalysisResultProps) {
 
   return (
     <div className="space-y-6" data-testid="analysis-result">
+      <FinancialSummary damageItems={result.damageItems} />
+      
       <Card>
         <CardHeader>
           <div className="flex items-start justify-between gap-4 flex-wrap">

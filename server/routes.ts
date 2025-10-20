@@ -238,16 +238,33 @@ ESPECIFICAÇÃO DE LOCALIZAÇÃO (OBRIGATÓRIO):
 - Evite termos vagos ou ambíguos - seja sempre específico e claro
 
 ESTIMATIVA DE PREÇOS (OBRIGATÓRIO):
-- Use a TABELA DE PREÇOS DE REFERÊNCIA fornecida acima para estimar custos
-- Para priceNew: consulte os valores de componentes novos na tabela
-- Para priceUsed: consulte os valores de componentes usados/segunda mão na tabela
-- Para repairCost: 
-  * Se severity="low": use 20-40% do valor de reparo da tabela
-  * Se severity="moderate": use 50-80% do valor de reparo da tabela
-  * Se severity="high": pode ser igual ou próximo ao valor de substituição (componente novo)
-- Se o componente não estiver na tabela, faça uma estimativa proporcional baseada em itens similares
+- Use a TABELA DE PREÇOS DE REFERÊNCIA como BASE, mas AJUSTE os valores conforme as características do bem:
+  
+  FATORES DE AJUSTE DE PREÇO:
+  * Marca/Modelo Premium (Mercedes, BMW, Lexus, Toyota high-end): +30-50% sobre preços base
+  * Marca/Modelo Médio (Toyota padrão, Honda, Nissan): usar preços base da tabela
+  * Marca/Modelo Econômico (marcas populares): -20-30% sobre preços base
+  * Móveis de luxo/designer: +40-60% sobre preços base
+  * Móveis de qualidade média: usar preços base da tabela
+  * Móveis econômicos: -25-35% sobre preços base
+  * Ano do veículo/móvel (novo 0-3 anos): usar limite superior da tabela
+  * Ano médio (4-7 anos): usar valores médios da tabela
+  * Ano antigo (8+ anos): usar limite inferior da tabela
+  * Componentes importados vs. locais: importados +20-40%
+  
+  CÁLCULO DE CUSTOS:
+  - Para priceNew: consulte a tabela e ajuste conforme fatores acima
+  - Para priceUsed: 40-60% do priceNew para componentes em boas condições
+  - Para repairCost: 
+    * Se severity="low": 20-40% do valor de reparo base da tabela
+    * Se severity="moderate": 50-80% do valor de reparo base da tabela
+    * Se severity="high": 80-100% do valor de reparo base, ou próximo ao valor de substituição usado
+  
+- Analise o contexto da imagem para determinar: marca, modelo, ano aproximado, categoria de qualidade
+- Se não houver informações claras, use valores médios da tabela
 - SEMPRE forneça os três campos de preço (priceNew, priceUsed, repairCost) para cada dano
-- Use formato claro: "300.000 KZ" ou "200.000-400.000 KZ"
+- Use formato claro e específico: "300.000 KZ" ou "200.000-400.000 KZ"
+- Seja conservador nas estimativas - é melhor subestimar que superestimar
 
 IMPORTANTE CRÍTICO:
 - A lista deve conter APENAS danos que foram VISUALMENTE IDENTIFICADOS nas imagens
