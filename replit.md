@@ -12,6 +12,17 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+**October 21, 2025 - PDF Reports & Render Deployment**
+- Implemented professional PDF report generation using PDFKit
+- PDF reports include complete damage analysis with all pricing information (new, used, repair costs)
+- Added financial summary section with total cost calculations
+- Smart price parsing handles ranges (e.g., "200.000-400.000 KZ") by calculating averages
+- PDF download available via API endpoint `/api/analyses/:id/pdf`
+- Frontend ExportButton now offers PDF download as primary option
+- Added keep-alive system for Render.com deployment (prevents free tier hibernation)
+- Auto-ping every 14 minutes using node-cron to keep server active
+- Created DEPLOY_RENDER.md with deployment instructions
+
 **October 20, 2025 - Model Updates**
 - Updated vision model from deprecated `llama-3.2-11b-vision-preview` to `meta-llama/llama-4-scout-17b-16e-instruct`
 - Updated reasoning model from deprecated `deepseek-r1-distill-llama-70b` to `llama-3.3-70b-versatile`
