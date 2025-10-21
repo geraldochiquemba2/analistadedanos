@@ -58,43 +58,43 @@ export default function WelcomePage() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-6 pt-12">
-            <Card data-testid="card-feature-fast" className="bg-background/90 backdrop-blur">
+            <Card data-testid="card-feature-fast" className="bg-white/10 dark:bg-white/5 backdrop-blur-lg border-white/20">
               <CardContent className="pt-6 space-y-3">
                 <div className="flex justify-center">
-                  <div className="h-12 w-12 rounded-md bg-primary/10 flex items-center justify-center">
+                  <div className="h-12 w-12 rounded-md bg-primary/20 flex items-center justify-center">
                     <Zap className="h-6 w-6 text-primary" />
                   </div>
                 </div>
-                <h3 className="font-semibold text-lg">Análise Rápida</h3>
-                <p className="text-sm text-muted-foreground">
+                <h3 className="font-semibold text-lg text-white">Análise Rápida</h3>
+                <p className="text-sm text-white/80">
                   Resultados precisos em questão de segundos utilizando inteligência artificial avançada.
                 </p>
               </CardContent>
             </Card>
 
-            <Card data-testid="card-feature-accurate" className="bg-background/90 backdrop-blur">
+            <Card data-testid="card-feature-accurate" className="bg-white/10 dark:bg-white/5 backdrop-blur-lg border-white/20">
               <CardContent className="pt-6 space-y-3">
                 <div className="flex justify-center">
-                  <div className="h-12 w-12 rounded-md bg-primary/10 flex items-center justify-center">
+                  <div className="h-12 w-12 rounded-md bg-primary/20 flex items-center justify-center">
                     <ScanSearch className="h-6 w-6 text-primary" />
                   </div>
                 </div>
-                <h3 className="font-semibold text-lg">Detecção Precisa</h3>
-                <p className="text-sm text-muted-foreground">
+                <h3 className="font-semibold text-lg text-white">Detecção Precisa</h3>
+                <p className="text-sm text-white/80">
                   Identificação detalhada de danos com análise visual e avaliação de severidade.
                 </p>
               </CardContent>
             </Card>
 
-            <Card data-testid="card-feature-secure" className="bg-background/90 backdrop-blur">
+            <Card data-testid="card-feature-secure" className="bg-white/10 dark:bg-white/5 backdrop-blur-lg border-white/20">
               <CardContent className="pt-6 space-y-3">
                 <div className="flex justify-center">
-                  <div className="h-12 w-12 rounded-md bg-primary/10 flex items-center justify-center">
+                  <div className="h-12 w-12 rounded-md bg-primary/20 flex items-center justify-center">
                     <Shield className="h-6 w-6 text-primary" />
                   </div>
                 </div>
-                <h3 className="font-semibold text-lg">Histórico Seguro</h3>
-                <p className="text-sm text-muted-foreground">
+                <h3 className="font-semibold text-lg text-white">Histórico Seguro</h3>
+                <p className="text-sm text-white/80">
                   Todas as análises são salvas e podem ser acessadas a qualquer momento.
                 </p>
               </CardContent>
