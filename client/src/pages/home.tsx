@@ -154,9 +154,9 @@ export default function HomePage() {
         backgroundAttachment: 'fixed',
       }}
     >
-      <div className="absolute inset-0 bg-gradient-to-b from-background/95 via-background/90 to-background/95 dark:from-background/98 dark:via-background/95 dark:to-background/98" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/50" />
       
-      <header className="sticky top-0 z-50 border-b bg-background/80 dark:bg-background/90 backdrop-blur relative">
+      <header className="sticky top-0 z-50 border-b bg-black/20 backdrop-blur relative">
         <div className="container flex h-16 items-center justify-between px-4 md:px-6">
           <div className="flex items-center gap-3">
             <ScanSearch className="h-6 w-6 text-primary" />
@@ -270,7 +270,7 @@ export default function HomePage() {
       </main>
 
       {history.length > 0 && (
-        <div className="sm:hidden border-t p-2 bg-background/80 backdrop-blur relative z-10">
+        <div className="sm:hidden border-t p-2 bg-black/20 backdrop-blur relative z-10">
           <Button
             variant="outline"
             size="sm"

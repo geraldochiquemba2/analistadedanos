@@ -17,9 +17,9 @@ export default function WelcomePage() {
         backgroundAttachment: 'fixed',
       }}
     >
-      <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/70" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/40" />
       
-      <header className="border-b border-white/10 bg-black/20 backdrop-blur relative z-10">
+      <header className="border-b border-white/10 bg-black/10 backdrop-blur relative z-10">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <ScanSearch className="h-6 w-6 text-white" />
