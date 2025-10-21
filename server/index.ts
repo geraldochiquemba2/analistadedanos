@@ -1,6 +1,8 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import cron from "node-cron";
+import axios from "axios";
 
 const app = express();
 app.use(express.json());
@@ -39,6 +41,14 @@ app.use((req, res, next) => {
 (async () => {
   const server = await registerRoutes(app);
 
+  app.get('/health', (_req: Request, res: Response) => {
+    res.status(200).json({ 
+      status: 'alive', 
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime()
+    });
+  });
+
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
@@ -67,5 +77,18 @@ app.use((req, res, next) => {
     reusePort: true,
   }, () => {
     log(`serving on port ${port}`);
+    
+    const SERVER_URL = process.env.RENDER_EXTERNAL_URL || `http://localhost:${port}`;
+    
+    cron.schedule('*/14 * * * *', async () => {
+      try {
+        await axios.get(`${SERVER_URL}/health`);
+        log('✓ Keep-alive ping enviado com sucesso');
+      } catch (err: any) {
+        log(`✗ Keep-alive falhou: ${err.message}`);
+      }
+    });
+    
+    log(`Keep-alive ativado: ping a cada 14 minutos para ${SERVER_URL}/health`);
   });
 })();
