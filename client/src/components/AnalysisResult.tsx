@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DamageItemCard, type DamageSeverity } from "./DamageItemCard";
-import { FileText, Calendar, LayoutGrid, List, Filter, ArrowUpDown } from "lucide-react";
+import { FileText, Calendar, LayoutGrid, List, Filter, ArrowUpDown, Send } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DamageList } from "./DamageList";
@@ -16,6 +16,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
 
 export interface DamageItem {
   itemName: string;
@@ -46,14 +57,53 @@ interface AnalysisResultProps {
   result: AnalysisResultData;
 }
 
+const seguradoras = [
+  "ENSA - Empresa Nacional de Seguros de Angola",
+  "AAA Seguros",
+  "Global Alliance",
+  "Nossa Seguros",
+  "Angola Seguros",
+  "Universal Seguros",
+  "Garantia Seguros",
+  "Previdente Seguros",
+  "Constância Seguros",
+  "Fidelidade Angola",
+];
+
 export function AnalysisResult({ result }: AnalysisResultProps) {
   const [severityFilter, setSeverityFilter] = useState<DamageSeverity | "all">("all");
   const [sortBy, setSortBy] = useState<"severity" | "name">("severity");
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedSeguradora, setSelectedSeguradora] = useState("");
+  const [telefone, setTelefone] = useState("");
+  const [apolice, setApolice] = useState("");
+  const { toast } = useToast();
   
   const severityLabel = {
     low: "Danos Leves",
     moderate: "Danos Moderados",
     high: "Danos Graves",
+  };
+
+  const handleEnviar = () => {
+    if (!selectedSeguradora || !telefone || !apolice) {
+      toast({
+        variant: "destructive",
+        title: "Campos obrigatórios",
+        description: "Por favor, preencha todos os campos.",
+      });
+      return;
+    }
+
+    toast({
+      title: "Relatório enviado!",
+      description: `Relatório enviado para ${selectedSeguradora} com sucesso.`,
+    });
+
+    setDialogOpen(false);
+    setSelectedSeguradora("");
+    setTelefone("");
+    setApolice("");
   };
 
   const severityOrder: Record<DamageSeverity, number> = {
@@ -90,6 +140,76 @@ export function AnalysisResult({ result }: AnalysisResultProps) {
             </div>
             <div className="flex items-center gap-2 flex-wrap">
               <ExportButton result={result} />
+              
+              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="default" size="sm" data-testid="button-send-insurance">
+                    <Send className="h-4 w-4 mr-2" />
+                    Enviar para Seguradora
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>Enviar Relatório para Seguradora</DialogTitle>
+                    <DialogDescription>
+                      Selecione a seguradora e preencha seus dados para enviar o relatório.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4 py-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="seguradora">Seguradora *</Label>
+                      <Select value={selectedSeguradora} onValueChange={setSelectedSeguradora}>
+                        <SelectTrigger id="seguradora" data-testid="select-insurance">
+                          <SelectValue placeholder="Selecione a seguradora" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {seguradoras.map((seg) => (
+                            <SelectItem key={seg} value={seg}>
+                              {seg}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {selectedSeguradora && (
+                      <>
+                        <div className="space-y-2">
+                          <Label htmlFor="telefone">Número de Telemóvel *</Label>
+                          <Input
+                            id="telefone"
+                            placeholder="+244 900 000 000"
+                            value={telefone}
+                            onChange={(e) => setTelefone(e.target.value)}
+                            data-testid="input-phone"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="apolice">Número da Apólice *</Label>
+                          <Input
+                            id="apolice"
+                            placeholder="Ex: APL123456"
+                            value={apolice}
+                            onChange={(e) => setApolice(e.target.value)}
+                            data-testid="input-policy"
+                          />
+                        </div>
+
+                        <Button
+                          onClick={handleEnviar}
+                          className="w-full"
+                          data-testid="button-submit-insurance"
+                        >
+                          <Send className="h-4 w-4 mr-2" />
+                          Enviar Relatório
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                </DialogContent>
+              </Dialog>
+              
               <Badge
                 variant={
                   result.overallSeverity === "high"
