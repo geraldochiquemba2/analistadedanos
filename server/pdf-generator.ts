@@ -279,7 +279,5 @@ export function generatePDF(analysis: Analysis): PDFKit.PDFDocument {
     { align: 'center' }
   );
 
-  doc.end();
-
   return doc;
 }

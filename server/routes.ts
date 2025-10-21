@@ -494,6 +494,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       doc.pipe(res);
+      doc.end();
     } catch (error) {
       console.error("Erro ao gerar PDF:", error);
       if (!res.headersSent) {
