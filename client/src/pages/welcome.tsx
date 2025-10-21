@@ -9,7 +9,7 @@ export default function WelcomePage() {
 
   return (
     <div className="min-h-screen w-full bg-background">
-      <header className="border-b">
+      <header className="border-b bg-background/95 backdrop-blur relative z-10">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <ScanSearch className="h-6 w-6 text-primary" />
@@ -19,14 +19,27 @@ export default function WelcomePage() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-16">
-        <div className="max-w-4xl mx-auto text-center space-y-8">
+      <main 
+        className="relative container mx-auto px-4 py-16"
+        style={{
+          backgroundImage: 'url(https://siccseguros.com.br/wp-content/uploads/2024/01/001a-24_SICCS_seguro-novo.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        <div 
+          className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/70"
+          style={{ margin: '-4rem -1rem' }}
+        />
+        
+        <div className="max-w-4xl mx-auto text-center space-y-8 relative z-10">
           <div className="space-y-4">
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white">
               Bem-vindo ao Sistema de
               <span className="text-primary"> Análise de Danos</span>
             </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-lg text-white/90 max-w-2xl mx-auto">
               Ferramenta inteligente para análise e avaliação de danos em ativos.
               Faça upload de imagens e receba análises detalhadas em segundos.
             </p>
@@ -36,7 +49,7 @@ export default function WelcomePage() {
             <Button
               size="lg"
               onClick={() => setLocation("/app")}
-              className="gap-2"
+              className="gap-2 bg-primary/90 backdrop-blur hover:bg-primary"
               data-testid="button-start"
             >
               Começar Análise
@@ -45,7 +58,7 @@ export default function WelcomePage() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-6 pt-12">
-            <Card data-testid="card-feature-fast">
+            <Card data-testid="card-feature-fast" className="bg-background/90 backdrop-blur">
               <CardContent className="pt-6 space-y-3">
                 <div className="flex justify-center">
                   <div className="h-12 w-12 rounded-md bg-primary/10 flex items-center justify-center">
@@ -59,7 +72,7 @@ export default function WelcomePage() {
               </CardContent>
             </Card>
 
-            <Card data-testid="card-feature-accurate">
+            <Card data-testid="card-feature-accurate" className="bg-background/90 backdrop-blur">
               <CardContent className="pt-6 space-y-3">
                 <div className="flex justify-center">
                   <div className="h-12 w-12 rounded-md bg-primary/10 flex items-center justify-center">
@@ -73,7 +86,7 @@ export default function WelcomePage() {
               </CardContent>
             </Card>
 
-            <Card data-testid="card-feature-secure">
+            <Card data-testid="card-feature-secure" className="bg-background/90 backdrop-blur">
               <CardContent className="pt-6 space-y-3">
                 <div className="flex justify-center">
                   <div className="h-12 w-12 rounded-md bg-primary/10 flex items-center justify-center">
