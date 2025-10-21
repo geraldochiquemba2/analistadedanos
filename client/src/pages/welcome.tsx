@@ -8,32 +8,30 @@ export default function WelcomePage() {
   const [, setLocation] = useLocation();
 
   return (
-    <div className="min-h-screen w-full bg-background">
-      <header className="border-b bg-background/95 backdrop-blur relative z-10">
+    <div 
+      className="min-h-screen w-full relative"
+      style={{
+        backgroundImage: 'url(https://siccseguros.com.br/wp-content/uploads/2024/01/001a-24_SICCS_seguro-novo.jpg)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed',
+      }}
+    >
+      <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/70" />
+      
+      <header className="border-b border-white/10 bg-black/20 backdrop-blur relative z-10">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <ScanSearch className="h-6 w-6 text-primary" />
-            <span className="font-semibold text-lg">Análise de Danos</span>
+            <ScanSearch className="h-6 w-6 text-white" />
+            <span className="font-semibold text-lg text-white">Análise de Danos</span>
           </div>
           <ThemeToggle />
         </div>
       </header>
 
-      <main 
-        className="relative container mx-auto px-4 py-16"
-        style={{
-          backgroundImage: 'url(https://siccseguros.com.br/wp-content/uploads/2024/01/001a-24_SICCS_seguro-novo.jpg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-        }}
-      >
-        <div 
-          className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/70"
-          style={{ margin: '-4rem -1rem' }}
-        />
-        
-        <div className="max-w-4xl mx-auto text-center space-y-8 relative z-10">
+      <main className="relative container mx-auto px-4 py-16 z-10">
+        <div className="max-w-4xl mx-auto text-center space-y-8">
           <div className="space-y-4">
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white">
               Bem-vindo ao Sistema de
@@ -103,9 +101,9 @@ export default function WelcomePage() {
         </div>
       </main>
 
-      <footer className="border-t mt-16">
+      <footer className="border-t border-white/10 relative z-10">
         <div className="container mx-auto px-4 py-8">
-          <p className="text-center text-sm text-muted-foreground">
+          <p className="text-center text-sm text-white/60">
             Sistema de Análise de Danos © 2025
           </p>
         </div>
