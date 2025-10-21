@@ -53,6 +53,8 @@ No painel do Render, adicione estas variáveis de ambiente:
 | Nome | Valor | Descrição |
 |------|-------|-----------|
 | `NODE_ENV` | `production` | Modo de produção |
+| `NPM_CONFIG_PRODUCTION` | `false` | **IMPORTANTE:** Instala devDependencies necessárias para build |
+| `GROQ_API_KEY` | *(sua chave)* | Chave da API Groq para análise de imagens |
 | `RENDER_EXTERNAL_URL` | Será preenchido automaticamente | URL do seu app |
 
 **Importante:** Após o primeiro deploy, copie a URL do seu app (exemplo: `https://seu-app.onrender.com`) e adicione/atualize:
@@ -124,6 +126,14 @@ Keep-alive ativado: ping a cada 14 minutos para https://seu-app.onrender.com/hea
 ---
 
 ## 🐛 Troubleshooting
+
+### Erro: "vite: not found" ou "esbuild: not found"
+
+**Solução:** Adicione a variável de ambiente:
+```
+NPM_CONFIG_PRODUCTION=false
+```
+Isso garante que as ferramentas de build sejam instaladas.
 
 ### App ainda está hibernando?
 
