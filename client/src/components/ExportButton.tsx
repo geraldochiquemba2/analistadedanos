@@ -65,15 +65,11 @@ export function ExportButton({ result }: ExportButtonProps) {
 
   const exportAsPDF = async () => {
     try {
-      toast({
-        title: "Gerando PDF...",
-        description: "Por favor, aguarde enquanto o relatório é gerado.",
-      });
-
       const response = await fetch(`/api/analyses/${result.id}/pdf`);
       
       if (!response.ok) {
-        throw new Error("Erro ao gerar PDF");
+        const errorText = await response.text();
+        throw new Error(errorText || "Erro ao gerar PDF");
       }
 
       const blob = await response.blob();
@@ -93,7 +89,7 @@ export function ExportButton({ result }: ExportButtonProps) {
       toast({
         variant: "destructive",
         title: "Erro ao gerar PDF",
-        description: "Não foi possível gerar o relatório em PDF. Tente novamente.",
+        description: error instanceof Error ? error.message : "Não foi possível gerar o relatório em PDF. Tente novamente.",
       });
     }
   };

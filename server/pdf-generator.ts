@@ -223,38 +223,27 @@ export function generatePDF(analysis: Analysis): PDFKit.PDFDocument {
   doc.text('RESUMO FINANCEIRO');
   doc.moveDown(0.5);
 
-  const totalNew = analysis.damageItems.reduce((sum, item) => {
-    if (item.priceNew) {
-      const match = item.priceNew.match(/[\d.]+/);
-      if (match) {
-        const value = parseFloat(match[0].replace(/\./g, ''));
-        return sum + value;
-      }
+  const parsePrice = (priceStr: string | undefined): number => {
+    if (!priceStr) return 0;
+    
+    const rangeMatch = priceStr.match(/([\d.]+)\s*-\s*([\d.]+)/);
+    if (rangeMatch) {
+      const min = parseFloat(rangeMatch[1].replace(/\./g, ''));
+      const max = parseFloat(rangeMatch[2].replace(/\./g, ''));
+      return (min + max) / 2;
     }
-    return sum;
-  }, 0);
+    
+    const singleMatch = priceStr.match(/[\d.]+/);
+    if (singleMatch) {
+      return parseFloat(singleMatch[0].replace(/\./g, ''));
+    }
+    
+    return 0;
+  };
 
-  const totalUsed = analysis.damageItems.reduce((sum, item) => {
-    if (item.priceUsed) {
-      const match = item.priceUsed.match(/[\d.]+/);
-      if (match) {
-        const value = parseFloat(match[0].replace(/\./g, ''));
-        return sum + value;
-      }
-    }
-    return sum;
-  }, 0);
-
-  const totalRepair = analysis.damageItems.reduce((sum, item) => {
-    if (item.repairCost) {
-      const match = item.repairCost.match(/[\d.]+/);
-      if (match) {
-        const value = parseFloat(match[0].replace(/\./g, ''));
-        return sum + value;
-      }
-    }
-    return sum;
-  }, 0);
+  const totalNew = analysis.damageItems.reduce((sum, item) => sum + parsePrice(item.priceNew), 0);
+  const totalUsed = analysis.damageItems.reduce((sum, item) => sum + parsePrice(item.priceUsed), 0);
+  const totalRepair = analysis.damageItems.reduce((sum, item) => sum + parsePrice(item.repairCost), 0);
 
   const formatKwanza = (value: number) => {
     return new Intl.NumberFormat('pt-AO', {

@@ -486,10 +486,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.setHeader('Content-Type', 'application/pdf');
       res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
       
+      doc.on('error', (err) => {
+        console.error('Erro ao gerar PDF:', err);
+        if (!res.headersSent) {
+          res.status(500).json({ error: 'Erro ao gerar PDF' });
+        }
+      });
+
       doc.pipe(res);
     } catch (error) {
       console.error("Erro ao gerar PDF:", error);
-      res.status(500).json({ error: "Erro ao gerar PDF" });
+      if (!res.headersSent) {
+        res.status(500).json({ error: "Erro ao gerar PDF" });
+      }
     }
   });
 
