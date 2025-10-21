@@ -4,7 +4,6 @@ import { UploadZone, type AssetInfo } from "@/components/UploadZone";
 import { AnalysisResult, type AnalysisResultData } from "@/components/AnalysisResult";
 import { AnalysisProgress } from "@/components/AnalysisProgress";
 import { HistoryPanel } from "@/components/HistoryPanel";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { ScanSearch, History, Plus, Home } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
@@ -204,7 +203,6 @@ export default function HomePage() {
                 Nova Análise
               </Button>
             )}
-            <ThemeToggle />
           </div>
         </div>
       </header>

@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { ScanSearch, Shield, Zap, ChevronRight } from "lucide-react";
 import { useLocation } from "wouter";
 
@@ -26,7 +25,6 @@ export default function WelcomePage() {
             <ScanSearch className="h-6 w-6 text-white" />
             <span className="font-semibold text-lg text-white">Análise de Danos</span>
           </div>
-          <ThemeToggle />
         </div>
       </header>
 
