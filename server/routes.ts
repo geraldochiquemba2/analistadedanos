@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import Groq from "groq-sdk";
 import { insertAnalysisSchema } from "@shared/schema";
 import multer from "multer";
+import { generatePDF } from "./pdf-generator";
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -466,6 +467,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Erro ao deletar análise:", error);
       res.status(500).json({ error: "Erro ao deletar análise" });
+    }
+  });
+
+  app.get("/api/analyses/:id/pdf", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const analyses = await storage.getAllAnalyses();
+      const analysis = analyses.find(a => a.id === id);
+      
+      if (!analysis) {
+        return res.status(404).json({ error: "Análise não encontrada" });
+      }
+
+      const doc = generatePDF(analysis);
+      
+      const filename = `relatorio-analise-${id}-${Date.now()}.pdf`;
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+      
+      doc.pipe(res);
+    } catch (error) {
+      console.error("Erro ao gerar PDF:", error);
+      res.status(500).json({ error: "Erro ao gerar PDF" });
     }
   });
 

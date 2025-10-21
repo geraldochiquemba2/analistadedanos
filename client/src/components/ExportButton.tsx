@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
+import { Download, FileText } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,12 +7,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { AnalysisResultData } from "./AnalysisResult";
+import { useToast } from "@/hooks/use-toast";
 
 interface ExportButtonProps {
   result: AnalysisResultData;
 }
 
 export function ExportButton({ result }: ExportButtonProps) {
+  const { toast } = useToast();
   const exportAsText = () => {
     let text = `RELATÓRIO DE ANÁLISE DE DANOS\n`;
     text += `${"=".repeat(50)}\n\n`;
@@ -61,6 +63,41 @@ export function ExportButton({ result }: ExportButtonProps) {
     URL.revokeObjectURL(url);
   };
 
+  const exportAsPDF = async () => {
+    try {
+      toast({
+        title: "Gerando PDF...",
+        description: "Por favor, aguarde enquanto o relatório é gerado.",
+      });
+
+      const response = await fetch(`/api/analyses/${result.id}/pdf`);
+      
+      if (!response.ok) {
+        throw new Error("Erro ao gerar PDF");
+      }
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `relatorio-analise-${result.id}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+
+      toast({
+        title: "PDF gerado com sucesso!",
+        description: "O relatório foi baixado para o seu dispositivo.",
+      });
+    } catch (error) {
+      console.error("Erro ao exportar PDF:", error);
+      toast({
+        variant: "destructive",
+        title: "Erro ao gerar PDF",
+        description: "Não foi possível gerar o relatório em PDF. Tente novamente.",
+      });
+    }
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -70,6 +107,10 @@ export function ExportButton({ result }: ExportButtonProps) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={exportAsPDF} data-testid="export-pdf">
+          <FileText className="h-4 w-4 mr-2" />
+          Baixar Relatório em PDF
+        </DropdownMenuItem>
         <DropdownMenuItem onClick={exportAsText} data-testid="export-text">
           <Download className="h-4 w-4 mr-2" />
           Exportar como Texto (.txt)
