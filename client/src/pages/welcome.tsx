@@ -61,8 +61,8 @@ export default function WelcomePage() {
             <Card data-testid="card-feature-fast" className="bg-white/10 dark:bg-white/5 backdrop-blur-lg border-white/20">
               <CardContent className="pt-6 space-y-3">
                 <div className="flex justify-center">
-                  <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center shadow-lg shadow-orange-500/50">
-                    <Zap className="h-8 w-8 text-white" strokeWidth={2.5} />
+                  <div className="h-14 w-14 rounded-lg bg-white/10 backdrop-blur flex items-center justify-center border border-white/20 shadow-inner">
+                    <Zap className="h-7 w-7 text-white" strokeWidth={1.5} />
                   </div>
                 </div>
                 <h3 className="font-semibold text-lg text-white">Análise Rápida</h3>
@@ -75,8 +75,8 @@ export default function WelcomePage() {
             <Card data-testid="card-feature-accurate" className="bg-white/10 dark:bg-white/5 backdrop-blur-lg border-white/20">
               <CardContent className="pt-6 space-y-3">
                 <div className="flex justify-center">
-                  <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center shadow-lg shadow-blue-500/50">
-                    <ScanSearch className="h-8 w-8 text-white" strokeWidth={2.5} />
+                  <div className="h-14 w-14 rounded-lg bg-white/10 backdrop-blur flex items-center justify-center border border-white/20 shadow-inner">
+                    <ScanSearch className="h-7 w-7 text-white" strokeWidth={1.5} />
                   </div>
                 </div>
                 <h3 className="font-semibold text-lg text-white">Detecção Precisa</h3>
@@ -89,8 +89,8 @@ export default function WelcomePage() {
             <Card data-testid="card-feature-secure" className="bg-white/10 dark:bg-white/5 backdrop-blur-lg border-white/20">
               <CardContent className="pt-6 space-y-3">
                 <div className="flex justify-center">
-                  <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center shadow-lg shadow-green-500/50">
-                    <Shield className="h-8 w-8 text-white" strokeWidth={2.5} />
+                  <div className="h-14 w-14 rounded-lg bg-white/10 backdrop-blur flex items-center justify-center border border-white/20 shadow-inner">
+                    <Shield className="h-7 w-7 text-white" strokeWidth={1.5} />
                   </div>
                 </div>
                 <h3 className="font-semibold text-lg text-white">Histórico Seguro</h3>
