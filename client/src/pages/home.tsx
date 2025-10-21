@@ -5,9 +5,10 @@ import { AnalysisResult, type AnalysisResultData } from "@/components/AnalysisRe
 import { AnalysisProgress } from "@/components/AnalysisProgress";
 import { HistoryPanel } from "@/components/HistoryPanel";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { ScanSearch, History, Plus } from "lucide-react";
+import { ScanSearch, History, Plus, Home } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { useLocation } from "wouter";
 
 export default function HomePage() {
   const [view, setView] = useState<"upload" | "result" | "history">("upload");
@@ -17,6 +18,7 @@ export default function HomePage() {
   const [history, setHistory] = useState<AnalysisResultData[]>([]);
   const [showHistory, setShowHistory] = useState(false);
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
 
   useEffect(() => {
     loadHistory();
@@ -156,6 +158,15 @@ export default function HomePage() {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setLocation("/")}
+              data-testid="button-home"
+            >
+              <Home className="h-4 w-4 mr-2" />
+              <span className="hidden sm:inline">Início</span>
+            </Button>
             {history.length > 0 && (
               <Button
                 variant="outline"
